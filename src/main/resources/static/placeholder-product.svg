@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420" role="img" aria-label="Product image placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eff7ff"/>
+      <stop offset="100%" stop-color="#d6efe8"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="420" rx="18" fill="url(#bg)"/>
+  <g fill="none" stroke="#6b7f8d" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="180" y="98" width="280" height="170" rx="14"/>
+    <path d="M213 228l54-62 44 52 38-35 58 45"/>
+    <circle cx="280" cy="150" r="17"/>
+  </g>
+  <text x="320" y="330" text-anchor="middle" font-family="Poppins, Segoe UI, sans-serif" font-size="28" font-weight="700" fill="#45606f">
+    Image Not Available
+  </text>
+</svg>

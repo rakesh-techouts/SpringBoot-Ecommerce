@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ShopSphere | Home</title>
+    <link rel="stylesheet" href="/style.css?v=1.0"/>
+    <script src="/theme.js?v=1.0"></script>
+</head>
+<body>
+<div class="nav">
+    <div class="container">
+        <a class="brand" href="/home">ShopSphere</a>
+        <div class="nav-links">
+            <a href="/home">Home</a>
+            <a href="/cart">Cart</a>
+            <a href="/orders">Orders</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <section class="section hero">
+        <h2>Welcome back, <span th:text="${userName}">User</span></h2>
+        <p>Find your next device and place orders in a few clicks.</p>
+    </section>
+
+    <section class="section">
+        <form method="get" action="/home" class="card filter-card">
+            <div>
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                    <option value="All" th:selected="${selectedCategory == 'All'}">All</option>
+                    <option value="Laptop" th:selected="${selectedCategory == 'Laptop'}">Laptop</option>
+                    <option value="Mobile" th:selected="${selectedCategory == 'Mobile'}">Mobile</option>
+                    <option value="Buds" th:selected="${selectedCategory == 'Buds'}">Buds</option>
+                </select>
+            </div>
+            <button type="submit">Apply Filter</button>
+        </form>
+
+        <div class="grid">
+            <article th:each="product : ${products}" class="card product-card clickable-card" onclick="window.location='/product/' + ${product.id}">
+                <a class="card-image-link" th:href="'/product/' + ${product.id}">
+                    <img class="product-image" th:src="${product.imageUrl}" th:alt="${product.name}"
+                         onerror="this.onerror=null;this.src='/placeholder-product.svg';"/>
+                </a>
+                <div class="meta">
+                    <span class="badge" th:text="${product.category}">Category</span>
+                    <span class="price">Rs. <span th:text="${product.price}">0</span></span>
+                </div>
+                <h3 th:text="${product.name}">Product Name</h3>
+                <p class="stock">Available: <span th:text="${product.stock}">0</span></p>
+                <form class="product-actions" method="post" action="/cart/add" onclick="event.stopPropagation()">
+                    <input type="hidden" name="productId" th:value="${product.id}"/>
+                    <input type="number" name="quantity" min="1" value="1"/>
+                    <button type="submit">Add to Cart</button>
+                    <a class="btn btn-secondary" th:href="'/buy-now?productId=' + ${product.id}" onclick="event.stopPropagation()">Buy Now</a>
+                </form>
+            </article>
+        </div>
+    </section>
+</div>
+</body>
+</html>

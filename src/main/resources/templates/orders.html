@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ShopSphere | Orders</title>
+    <link rel="stylesheet" href="/style.css"/>
+    <script src="/theme.js"></script>
+</head>
+<body>
+<div class="nav">
+    <div class="container">
+        <a class="brand" href="/home">ShopSphere</a>
+        <div class="nav-links">
+            <a href="/home">Home</a>
+            <a href="/cart">Cart</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <section class="section">
+        <h2>Order History</h2>
+        <div th:each="order : ${orders}" class="card spaced-top">
+            <h3>Order #<span th:text="${order.id}">1</span></h3>
+            <p class="muted">Placed: <span th:text="${order.createdAt}">Date</span></p>
+            <table>
+                <tr>
+                    <th>Image</th>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                </tr>
+                <tr th:each="item : ${order.orderItems}">
+                    <td>
+                        <img class="table-image" th:src="${item.product.imageUrl}" th:alt="${item.product.name}"
+                             onerror="this.onerror=null;this.src='/placeholder-product.svg';"/>
+                    </td>
+                    <td th:text="${item.product.name}">Product Name</td>
+                    <td th:text="${item.quantity}">1</td>
+                    <td>Rs. <span th:text="${item.price}">0</span></td>
+                </tr>
+            </table>
+            <p class="price spaced-top">Total: Rs. <span th:text="${order.totalAmount}">0</span></p>
+        </div>
+    </section>
+</div>
+</body>
+</html>

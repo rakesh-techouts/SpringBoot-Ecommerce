@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ShopSphere | Cart</title>
+    <link rel="stylesheet" href="/style.css"/>
+    <script src="/theme.js"></script>
+</head>
+<body>
+<div class="nav">
+    <div class="container">
+        <a class="brand" href="/home">ShopSphere</a>
+        <div class="nav-links">
+            <a href="/home">Home</a>
+            <a href="/orders">Orders</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <section class="section">
+        <div class="card">
+            <h2>Your Cart</h2>
+            <p class="error" th:if="${error}" th:text="${error}"></p>
+            <div th:if="${#lists.isEmpty(items)}">
+                <p class="muted">Your cart is empty</p>
+            </div>
+            <div th:unless="${#lists.isEmpty(items)}">
+                <table>
+                    <tr>
+                        <th>Image</th>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Actions</th>
+                    </tr>
+                    <tr th:each="item : ${items}">
+                        <td>
+                            <img class="table-image" th:src="${item.product.imageUrl}" th:alt="${item.product.name}"
+                                 onerror="this.onerror=null;this.src='/placeholder-product.svg';"/>
+                        </td>
+                        <td th:text="${item.product.name}">Product Name</td>
+                        <td>Rs. <span th:text="${item.product.price}">0</span></td>
+                        <td th:text="${item.quantity}">1</td>
+                        <td>
+                            <div class="table-actions">
+                                <form method="post" th:action="'/cart/increase/' + ${item.id}">
+                                    <button type="submit">+</button>
+                                </form>
+                                <form method="post" th:action="'/cart/decrease/' + ${item.id}">
+                                    <button class="btn btn-ghost" type="submit">-</button>
+                                </form>
+                                <form method="post" th:action="'/cart/remove/' + ${item.id}">
+                                    <button class="btn btn-secondary" type="submit">Remove</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <h3 class="spaced-top">Total: Rs. <span th:text="${total}">0</span></h3>
+                <form method="get" action="/checkout">
+                    <button type="submit">Checkout Cart</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

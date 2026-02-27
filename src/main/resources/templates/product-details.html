@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ShopSphere | Product Details</title>
+    <link rel="stylesheet" href="/style.css"/>
+    <script src="/theme.js"></script>
+</head>
+<body>
+<div class="nav">
+    <div class="container">
+        <a class="brand" th:href="${isLoggedIn ? '/home' : '/index'}">ShopSphere</a>
+        <div class="nav-links">
+            <div th:if="${isLoggedIn}">
+                <a href="/home">Home</a>
+                <a href="/cart">Cart</a>
+                <a href="/orders">Orders</a>
+                <a href="/logout">Logout</a>
+            </div>
+            <div th:unless="${isLoggedIn}">
+                <a href="/index">Products</a>
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <section class="section">
+        <div class="card detail-card">
+            <div>
+                <img class="detail-image" th:src="${product.imageUrl}" th:alt="${product.name}"
+                     onerror="this.onerror=null;this.src='/placeholder-product.svg';"/>
+            </div>
+            <div class="detail-content">
+                <h2 th:text="${product.name}">Product Name</h2>
+                <div class="meta">
+                    <span class="badge" th:text="${product.category}">Category</span>
+                    <span class="price">Rs. <span th:text="${product.price}">0</span></span>
+                </div>
+                <p class="stock">Available: <span th:text="${product.stock}">0</span></p>
+                <h3>Description</h3>
+                <p class="muted" th:text="${product.description}">Product description</p>
+
+                <div th:if="${isLoggedIn}">
+                    <form class="product-actions" method="post" action="/cart/add">
+                        <input type="hidden" name="productId" th:value="${product.id}"/>
+                        <input type="number" name="quantity" min="1" value="1"/>
+                        <button type="submit">Add to Cart</button>
+                        <a class="btn btn-secondary" th:href="'/buy-now?productId=' + ${product.id}">Buy Now</a>
+                    </form>
+                </div>
+                <div th:unless="${isLoggedIn}">
+                    <div class="product-actions">
+                        <a class="btn btn-primary" href="/login">Login to Buy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

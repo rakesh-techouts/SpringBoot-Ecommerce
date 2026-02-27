@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ShopSphere | Checkout</title>
+    <link rel="stylesheet" href="/style.css"/>
+    <script src="/theme.js"></script>
+</head>
+<body>
+<div class="nav">
+    <div class="container">
+        <a class="brand" href="/home">ShopSphere</a>
+        <div class="nav-links">
+            <a href="/home">Home</a>
+            <a href="/cart">Cart</a>
+            <a href="/orders">Orders</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <section class="section">
+        <h2>Checkout</h2>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+
+        <div class="checkout-layout">
+            <div class="card">
+                <h3>Order Summary</h3>
+                <table>
+                    <tr>
+                        <th>Image</th>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Subtotal</th>
+                    </tr>
+                    <tr th:each="item : ${checkoutItems}">
+                        <td>
+                            <img class="table-image" th:src="${item.imageUrl}" th:alt="${item.name}"
+                                 onerror="this.onerror=null;this.src='/placeholder-product.svg';"/>
+                        </td>
+                        <td th:text="${item.name}">Product Name</td>
+                        <td>Rs. <span th:text="${item.price}">0</span></td>
+                        <td th:text="${item.quantity}">1</td>
+                        <td>Rs. <span th:text="${item.subtotal}">0</span></td>
+                    </tr>
+                </table>
+                <p class="price spaced-top">Total: Rs. <span th:text="${checkoutTotal}">0</span></p>
+            </div>
+
+            <div class="card">
+                <h3>Delivery & Payment</h3>
+                
+                <!-- Address Form (always visible, pre-populated with user address) -->
+                <div class="address-form-section">
+                    <form class="checkout-form spaced-top" method="post" action="/checkout/place">
+                        <input th:if="${productId}" type="hidden" name="productId" th:value="${productId}"/>
+
+                        <label for="shippingAddress">Shipping Address</label>
+                        <textarea id="shippingAddress" name="shippingAddress" rows="5"
+                                  placeholder="Enter complete address with landmark, city, state, and PIN code"
+                                  required th:text="${userAddress != null ? userAddress : ''}"></textarea>
+                        <small class="address-hint">Please Check Your address Change if needed</small>
+
+                        <label for="paymentMode">Payment Type</label>
+                        <select id="paymentMode" name="paymentMode" required>
+                            <option value="">Select payment type</option>
+                            <option th:each="mode : ${paymentModes}" 
+                                    th:value="${mode}" 
+                                    th:text="${mode}"
+                                    th:selected="${selectedPaymentMode == mode}">Payment Mode</option>
+                        </select>
+
+                        <button type="submit">Place Order</button>
+                    </form>
+                </div>
+                
+                <p class="spaced-top"><a class="subtle-link" href="/cart">Back to Cart</a></p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+.address-hint {
+    display: block;
+    margin-top: 0.25rem;
+    margin-bottom: 1rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.checkout-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.checkout-form textarea,
+.checkout-form select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.checkout-form textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.checkout-form button {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.checkout-form button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+</style>
+</body>
+</html>

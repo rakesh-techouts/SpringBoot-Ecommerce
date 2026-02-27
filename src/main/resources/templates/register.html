@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ShopSphere | Register</title>
+    <link rel="stylesheet" href="/style.css"/>
+    <script src="/theme.js"></script>
+</head>
+<body>
+<div class="auth-wrap">
+    <div class="card auth-card">
+        <h2>Create Account</h2>
+        <p class="muted">Join and start placing orders quickly.</p>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+        <form method="post" action="/register">
+            <label>Name</label>
+            <input type="text" name="name" required/>
+            <label>Email</label>
+            <input type="email" name="email" required/>
+            <label>Phone Number</label>
+            <input type="tel" name="phone" pattern="[0-9]{10}" maxlength="10" required/>
+            <label>Password</label>
+            <input type="password" name="password" minlength="8" required/>
+            <button class="spaced-top" type="submit">Register</button>
+        </form>
+        <p class="spaced-top">Already have an account? <a class="subtle-link" href="/login">Login</a></p>
+        <p><a class="subtle-link" href="/index">Back to products</a></p>
+    </div>
+</div>
+</body>
+</html>

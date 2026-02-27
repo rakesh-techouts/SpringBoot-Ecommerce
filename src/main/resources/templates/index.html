@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ShopSphere | Products</title>
+    <link rel="stylesheet" href="/style.css?v=1.0"/>
+    <script src="/theme.js?v=1.0"></script>
+</head>
+<body>
+<div class="nav">
+    <div class="container">
+        <a class="brand" href="/index">ShopSphere</a>
+        <div class="nav-links">
+            <a href="/index">Products</a>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <section class="section hero">
+        <h1>Explore Top Tech Deals</h1>
+        <p>Shop laptops, mobiles, and buds with smooth checkout.</p>
+    </section>
+
+    <section class="section">
+        <form method="get" action="/index" class="card filter-card">
+            <div>
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                    <option value="All" th:selected="${selectedCategory == 'All'}">All</option>
+                    <option value="Laptop" th:selected="${selectedCategory == 'Laptop'}">Laptop</option>
+                    <option value="Mobile" th:selected="${selectedCategory == 'Mobile'}">Mobile</option>
+                    <option value="Buds" th:selected="${selectedCategory == 'Buds'}">Buds</option>
+                </select>
+            </div>
+            <button type="submit">Apply Filter</button>
+        </form>
+
+        <div class="grid">
+            <article th:each="product : ${products}" class="card product-card clickable-card" onclick="window.location='/product/' + ${product.id}">
+                <a class="card-image-link" th:href="'/product/' + ${product.id}">
+                    <img class="product-image" th:src="${product.imageUrl}" th:alt="${product.name}"
+                         onerror="this.onerror=null;this.src='/placeholder-product.svg';"/>
+                </a>
+                <div class="meta">
+                    <span class="badge" th:text="${product.category}">Category</span>
+                    <span class="price">Rs. <span th:text="${product.price}">0</span></span>
+                </div>
+                <h3 th:text="${product.name}">Product Name</h3>
+                <div class="product-actions">
+                    <a class="btn btn-primary" href="/login" onclick="event.stopPropagation()">Login to Buy</a>
+                </div>
+            </article>
+        </div>
+    </section>
+</div>
+</body>
+</html>
