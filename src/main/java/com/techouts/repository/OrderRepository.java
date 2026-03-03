@@ -9,4 +9,9 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @EntityGraph(attributePaths = {"orderItems", "orderItems.product"})
     List<Order> findByUserIdOrderByCreatedAtDesc(Long userId);
+
+    @EntityGraph(attributePaths = {"user", "orderItems", "orderItems.product"})
+    List<Order> findAllByOrderByCreatedAtDesc();
+
+    long countByUserId(Long userId);
 }

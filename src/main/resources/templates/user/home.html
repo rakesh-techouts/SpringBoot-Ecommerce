@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ShopSphere | Home</title>
+    <link rel="stylesheet" href="/style.css?v=1.0"/>
+    <script src="/theme.js?v=1.0"></script>
+</head>
+<body>
+<div class="nav">
+    <div class="container">
+        <a class="brand" href="/home">
+            <svg class="brand-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <span class="brand-text">ShopSphere</span>
+        </a>
+        <div class="nav-center">
+            <form method="get" action="/home" class="search-bar">
+                <input type="text" name="search" placeholder="Search products..." th:value="${search != null ? search : ''}"/>
+                <button type="submit" class="search-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+        <div class="nav-links">
+            <a href="/home" class="nav-link active">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9,22 9,12 15,12 15,22"/>
+                </svg>
+                <span>Home</span>
+            </a>
+            <a href="/cart" class="nav-link cart-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"/>
+                    <circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                <span>Cart</span>
+                <span class="cart-count" id="cartCount"
+                      th:style="${cartCount != null and cartCount > 0} ? '' : 'display:none;'"
+                      th:text="${cartCount != null and cartCount > 0 ? cartCount : ''}"></span>
+            </a>
+            <a href="/orders" class="nav-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10,9 9,9 8,9"/>
+                </svg>
+                <span>Orders</span>
+            </a>
+            <a href="/profile" class="nav-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span>Profile</span>
+            </a>
+            <a href="/admin" class="nav-link" th:if="${session.IS_ADMIN != null and session.IS_ADMIN}">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.08a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.08a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.08a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                <span>Admin Activities</span>
+            </a>
+            <a href="/logout" class="nav-link logout">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16,17 21,12 16,7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <section class="section hero">
+        <h2>Welcome back, <span th:text="${userName}">User</span></h2>
+        <p>Find your next device and place orders in a few clicks.</p>
+    </section>
+
+    <section class="section">
+        <form method="get" action="/home" class="card filter-card">
+            <div>
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                    <option value="All" th:selected="${selectedCategory == 'All'}">All</option>
+                    <option value="Laptop" th:selected="${selectedCategory == 'Laptop'}">Laptop</option>
+                    <option value="Mobile" th:selected="${selectedCategory == 'Mobile'}">Mobile</option>
+                    <option value="Buds" th:selected="${selectedCategory == 'Buds'}">Buds</option>
+                </select>
+            </div>
+            <input type="hidden" name="search" th:value="${search != null ? search : ''}"/>
+            <button type="submit">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                    <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46 22,3"/>
+                </svg>
+                Apply Filter
+            </button>
+        </form>
+
+        <div class="grid">
+            <article th:each="product : ${products}" class="card product-card">
+                <a class="card-image-link" th:href="'/product/' + ${product.id}">
+                    <img class="product-image" th:src="${product.imageUrl}" th:alt="${product.name}"
+                         onerror="this.onerror=null;this.src='/placeholder-product.svg';"/>
+                </a>
+                <div class="meta">
+                    <span class="badge" th:text="${product.category}">Category</span>
+                    <span class="price">Rs. <span th:text="${product.price}">0</span></span>
+                </div>
+                <h3 th:text="${product.name}">Product Name</h3>
+                <p class="stock">Available: <span th:text="${product.stock}">0</span></p>
+                <p class="stock-warning" th:if="${product.stock == 0}">Out of stock</p>
+                <p class="stock-warning low" th:if="${product.stock > 0 and product.stock <= 5}">Only few left</p>
+                <form class="product-actions" method="post" action="/cart/add-form" th:onsubmit="|return handleAddFormSubmit(event, this, ${product.id});|">
+                    <input type="hidden" name="productId" th:value="${product.id}"/>
+                    <input type="number" name="quantity" min="1" th:max="${product.stock}" value="1"
+                           th:disabled="${product.stock == 0}"/>
+                    <button type="submit" th:disabled="${product.stock == 0}">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                            <circle cx="9" cy="21" r="1"/>
+                            <circle cx="20" cy="21" r="1"/>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                        </svg>
+                        <span th:text="${product.stock == 0 ? 'Out of Stock' : 'Add to Cart'}">Add to Cart</span>
+                    </button>
+                    <a class="btn btn-secondary"
+                       th:classappend="${product.stock == 0} ? ' disabled-link'"
+                       href="#"
+                       th:onclick="${product.stock == 0} ? 'return false;' : |return buyNowFromCard(this, ${product.id});|"
+                       onclick="event.stopPropagation()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                            <path d="M4.5 16.5c0 1.1.9 2 2 2s2-.9 2-2-.9-2-2-2-2 .9-2 2zm9 0c0 1.1.9 2 2 2s2-.9 2-2-.9-2-2-2-2 .9-2 2z"/>
+                            <path d="M1 2h3l1.68 8.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                            <path d="M16 6h-2v4h-4v2h4v4h2v-4h4v-2h-4V6z"/>
+                        </svg>
+                        Buy Now
+                    </a>
+                </form>
+            </article>
+        </div>
+    </section>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ShopSphere</h3>
+                <p>Your trusted destination for quality electronics and gadgets. Explore our wide range of products with competitive prices.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                            <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" fill="white"/>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/>
+                            <rect x="2" y="9" width="4" height="12"/>
+                            <circle cx="4" cy="4" r="2"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="/home">Home</a></li>
+                    <li><a href="/about">About Us</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/faq">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Categories</h4>
+                <ul class="footer-links">
+                    <li><a href="/home?category=Laptop">Laptops</a></li>
+                    <li><a href="/home?category=Mobile">Mobiles</a></li>
+                    <li><a href="/home?category=Buds">Earbuds</a></li>
+                    <li><a href="/deals">Special Deals</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Customer Service</h4>
+                <ul class="footer-links">
+                    <li><a href="/shipping">Shipping Info</a></li>
+                    <li><a href="/returns">Returns</a></li>
+                    <li><a href="/warranty">Warranty</a></li>
+                    <li><a href="/support">Support</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 ShopSphere. All rights reserved. | <a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Service</a></p>
+        </div>
+    </div>
+</footer>
+
+<style>
+/* Modern Navigation Styles */
+.nav {
+    background: #283a45;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: white;
+    font-weight: 700;
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.brand:hover {
+    transform: translateY(-2px);
+}
+
+.brand-icon {
+    width: 28px;
+    height: 28px;
+    stroke: white;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.brand-text {
+    background: linear-gradient(45deg, #ffffff, #f0f0f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.nav-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    max-width: 500px;
+    margin: 0 2rem;
+}
+
+.search-bar {
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 25px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.search-bar:focus-within {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.search-bar input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 0.75rem 1rem;
+    color: white;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.search-bar input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.search-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    padding: 0.75rem;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.search-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.nav-links {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    border-radius: 16px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.nav-link:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
+    color: white;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 
+                0 0 20px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.nav-link:hover::before {
+    left: 100%;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+    height: 100%;
+}
+
+.nav-link:active {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.nav-link.active {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
+    color: white;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 
+                0 0 15px rgba(255, 255, 255, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.02);
+}
+
+.nav-link.logout {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(239, 68, 68, 0.1));
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.nav-link.logout:hover {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(239, 68, 68, 0.2));
+    color: white;
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4), 
+                0 0 20px rgba(239, 68, 68, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(239, 68, 68, 0.5);
+}
+
+.nav-link svg {
+    width: 20px;
+    height: 20px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.nav-link:hover svg {
+    transform: scale(1.2) rotate(5deg);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.stock-warning {
+    margin: 0.4rem 0 0.6rem;
+    color: #d62828;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.stock-warning.low {
+    color: #ff8c00;
+}
+
+.disabled-link {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Cart count badge styles */
+.cart-link {
+    position: relative;
+}
+
+.nav-link.cart-link {
+    overflow: visible;
+}
+
+.cart-count {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #ff4757;
+    color: white;
+    border-radius: 50%;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    font-size: 9px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #283a45;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+    .nav .container {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem 0;
+    }
+    
+    .nav-center {
+        order: -1;
+        margin: 0;
+        width: 100%;
+    }
+    
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .nav-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .nav-link span:not(.cart-count) {
+        display: none;
+    }
+    
+    .brand {
+        font-size: 1.25rem;
+    }
+}
+</style>
+
+<script>
+function updateCartCount() {
+    fetch('/cart/count')
+        .then(response => response.json())
+        .then(data => {
+            const cartCountElement = document.getElementById('cartCount');
+            if (cartCountElement) {
+                cartCountElement.textContent = data.cartCount;
+                cartCountElement.style.display = data.cartCount > 0 ? 'flex' : 'none';
+            }
+        })
+        .catch(error => console.error('Error fetching cart count:', error));
+}
+
+function handleAddFormSubmit(event, form, productId) {
+    const quantityInput = form.querySelector('[name=quantity]');
+    if (quantityInput && quantityInput.disabled) {
+        event.preventDefault();
+        showNotification('Product is out of stock', 'error');
+        return false;
+    }
+    if (!window.fetch) {
+        return true;
+    }
+    event.preventDefault();
+    const quantity = quantityInput ? quantityInput.value : 1;
+    addToCart(productId, quantity);
+    return false;
+}
+
+function buyNowFromCard(linkEl, productId) {
+    const form = linkEl.closest('form');
+    const quantityInput = form ? form.querySelector('[name=quantity]') : null;
+    const quantity = quantityInput ? quantityInput.value : 1;
+    window.location.href = `/buy-now?productId=${encodeURIComponent(productId)}&quantity=${encodeURIComponent(quantity)}`;
+    return false;
+}
+
+// Add to cart with AJAX
+function addToCart(productId, quantity = 1) {
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `productId=${encodeURIComponent(productId)}&quantity=${encodeURIComponent(quantity)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update cart count
+            const cartCountElement = document.getElementById('cartCount');
+            if (cartCountElement) {
+                cartCountElement.textContent = data.cartCount;
+                cartCountElement.style.display = data.cartCount > 0 ? 'flex' : 'none';
+            }
+            // Show success message
+            showNotification(data.message, 'success');
+        } else {
+            showNotification(data.error || 'Error adding to cart', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error adding to cart:', error);
+        showNotification('Error adding to cart', 'error');
+    });
+}
+
+// Show notification
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        border-radius: 4px;
+        color: white;
+        font-weight: 500;
+        z-index: 1000;
+        animation: slideIn 0.3s ease;
+        ${type === 'success' ? 'background: #28a745;' : 'background: #dc3545;'}
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Update cart count on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateCartCount();
+    
+    // Update cart count periodically (every 30 seconds)
+    setInterval(updateCartCount, 30000);
+});
+
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>

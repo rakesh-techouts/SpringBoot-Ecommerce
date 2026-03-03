@@ -29,4 +29,9 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
     }
+
+    @Override
+    public List<Products> searchProductsByName(String name) {
+        return productRepository.findByNameContainingIgnoreCase(name);
+    }
 }

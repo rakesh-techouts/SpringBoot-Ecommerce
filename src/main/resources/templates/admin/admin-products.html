@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin | Products</title>
+    <link rel="stylesheet" href="/style.css"/>
+    <style>
+        body { background: #f3f6fb; }
+        .admin-header {
+            background: linear-gradient(135deg, #1e2a44, #253a66);
+            color: #fff;
+            border-radius: 14px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 22px rgba(20, 37, 73, 0.25);
+        }
+        .admin-header h2 { margin: 0; color: #fff; }
+        .admin-card {
+            border-radius: 14px;
+            border: 1px solid #d9e1ef;
+            box-shadow: 0 6px 18px rgba(25, 45, 88, 0.08);
+        }
+        .clickable-product {
+            display: inline-flex;
+            align-items: center;
+            color: #1f4db5;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .clickable-product:hover { text-decoration: underline; }
+        .thumb-link img { transition: transform 0.2s ease; }
+        .thumb-link:hover img { transform: scale(1.05); }
+    </style>
+</head>
+<body>
+<div class="container">
+    <section class="section">
+        <div class="admin-header" style="display:flex; justify-content:space-between; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+            <h2>Admin Panel - Products</h2>
+            <div style="display:flex; gap:0.5rem;">
+                <a class="btn btn-secondary" href="/admin/orders">Orders</a>
+                <a class="btn btn-secondary" href="/admin/users">Users</a>
+                <a class="btn btn-secondary" href="/home">User Site</a>
+                <a class="btn btn-secondary" href="/logout">Logout</a>
+            </div>
+        </div>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+        <p class="success" th:if="${success}" th:text="${success}"></p>
+
+        <div class="card spaced-top admin-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <h3>Product Catalog</h3>
+                <div style="display:flex; gap:0.5rem;">
+                    <a class="btn btn-secondary" href="/admin/orders">Manage Orders</a>
+                    <a class="btn btn-primary" href="/admin/products/new">Add Product</a>
+                </div>
+            </div>
+            <form method="get" action="/admin/products" style="display:flex; gap:0.6rem; margin-bottom:1rem; align-items:center; flex-wrap:wrap;">
+                <input type="text" name="search" placeholder="Search by product name..." th:value="${search}" style="min-width:260px;"/>
+                <label for="category">Category:</label>
+                <select id="category" name="category">
+                    <option value="ALL" th:selected="${selectedCategory == 'ALL'}">All Categories</option>
+                    <option th:each="c : ${categories}" th:value="${c}" th:text="${c}" th:selected="${selectedCategory == c}">Laptop</option>
+                </select>
+                <label for="sort">Sort:</label>
+                <select id="sort" name="sort">
+                    <option value="created" th:selected="${selectedSort == 'created'}">Default</option>
+                    <option value="categoryAsc" th:selected="${selectedSort == 'categoryAsc'}">Category A-Z</option>
+                    <option value="categoryDesc" th:selected="${selectedSort == 'categoryDesc'}">Category Z-A</option>
+                </select>
+                <button class="btn btn-primary" type="submit">Apply</button>
+                <a class="btn btn-secondary" href="/admin/products">Clear</a>
+            </form>
+
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                </tr>
+                <tr th:each="p : ${products}">
+                    <td th:text="${p.id}">1</td>
+                    <td>
+                        <a class="thumb-link" th:href="'/admin/products/' + ${p.id}">
+                            <img class="table-image" th:src="${p.imageUrl}" th:alt="${p.name}" onerror="this.onerror=null;this.src='/placeholder-product.svg';"/>
+                        </a>
+                    </td>
+                    <td><a class="clickable-product" th:href="'/admin/products/' + ${p.id}" th:text="${p.name}">Name</a></td>
+                    <td th:text="${p.category}">Category</td>
+                    <td>Rs. <span th:text="${p.price}">0</span></td>
+                    <td>
+                        <form th:action="'/admin/products/' + ${p.id} + '/stock'" method="post" style="display:flex; gap:0.4rem; align-items:center;">
+                            <input type="number" name="stock" min="0" th:value="${p.stock}" style="width:90px;"/>
+                            <button class="btn btn-primary" type="submit">Update</button>
+                        </form>
+                    </td>
+                    <td>
+                        <div style="display:flex; gap:0.4rem;">
+                            <a class="btn btn-secondary" th:href="'/admin/products/' + ${p.id} + '/edit'">Edit</a>
+                            <form th:action="'/admin/products/' + ${p.id} + '/delete'" method="post">
+                                <button class="btn btn-secondary" type="submit">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </section>
+</div>
+</body>
+</html>

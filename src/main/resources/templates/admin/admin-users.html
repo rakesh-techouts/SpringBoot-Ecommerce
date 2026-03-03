@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin | Users</title>
+    <link rel="stylesheet" href="/style.css"/>
+    <style>
+        body {
+            background: #eef3f8;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #1e2a44, #253a66);
+            color: #fff;
+            border-radius: 14px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 22px rgba(20, 37, 73, 0.25);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-header h2 {
+            margin: 0;
+            color: #fff;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-card {
+            border-radius: 14px;
+            border: 1px solid #d9e1ef;
+            box-shadow: 0 6px 18px rgba(25, 45, 88, 0.08);
+        }
+
+        .users-search {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 0.6rem;
+            margin: 0.8rem 0 1rem;
+            align-items: center;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            background: #e6f6f4;
+            color: #0b6b64;
+            border: 1px solid #c8ebe7;
+        }
+
+        .role-badge.admin {
+            background: #ede9fe;
+            color: #5b21b6;
+            border-color: #ddd6fe;
+        }
+
+        .role-form {
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+        }
+
+        .role-form select {
+            min-width: 130px;
+            width: 130px;
+            padding: 9px 10px;
+            font-weight: 600;
+        }
+
+        .row-actions {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .users-table-wrap {
+            overflow-x: auto;
+        }
+
+        .users-table th {
+            background: #eaf1f7;
+            color: #1f4151;
+            white-space: nowrap;
+        }
+
+        .users-table td {
+            white-space: nowrap;
+        }
+
+        @media (max-width: 900px) {
+            .users-search {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <section class="section">
+        <div class="admin-header">
+            <h2>Admin Panel - Users</h2>
+            <div class="admin-actions">
+                <a class="btn btn-secondary" href="/admin/products">Products</a>
+                <a class="btn btn-secondary" href="/admin/orders">Orders</a>
+                <a class="btn btn-secondary" href="/home">User Site</a>
+                <a class="btn btn-secondary" href="/logout">Logout</a>
+            </div>
+        </div>
+
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+        <p class="success" th:if="${success}" th:text="${success}"></p>
+
+        <div class="card spaced-top admin-card">
+            <h3>User Management</h3>
+            <form method="get" action="/admin/users" class="users-search">
+                <input type="text" name="search" placeholder="Search by id, username, email, phone, name" th:value="${search}"/>
+                <button class="btn btn-primary" type="submit">Search</button>
+                <a class="btn btn-secondary" href="/admin/users">Clear</a>
+            </form>
+
+            <div class="users-table-wrap">
+            <table class="users-table">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Role Action</th>
+                    <th>Actions</th>
+                </tr>
+                <tr th:each="u : ${users}" th:with="currentRole=${u.role != null ? u.role : T(com.techouts.entity.UserRole).ROLE_USER}">
+                    <td th:text="${u.id}">1</td>
+                    <td th:text="${u.name}">Name</td>
+                    <td th:text="${u.username}">username</td>
+                    <td th:text="${u.email}">mail@test.com</td>
+                    <td th:text="${u.phone != null ? u.phone : '-'}">9999999999</td>
+                    <td>
+                        <span class="role-badge"
+                              th:classappend="${currentRole.name() == 'ROLE_ADMIN'} ? ' admin' : ''"
+                              th:text="${#strings.replace(currentRole.name(), 'ROLE_', '')}">USER</span>
+                    </td>
+                    <td>
+                        <form th:action="'/admin/users/' + ${u.id} + '/role'" method="post" class="role-form">
+                            <select name="role">
+                                <option th:each="r : ${roles}" th:value="${r.name()}" th:text="${#strings.replace(r.name(), 'ROLE_', '')}" th:selected="${r.name() == currentRole.name()}">USER</option>
+                            </select>
+                            <button class="btn btn-primary" type="submit">Update Role</button>
+                        </form>
+                    </td>
+                    <td>
+                        <div class="row-actions">
+                            <a class="btn btn-secondary" th:href="'/admin/users/' + ${u.id} + '/edit'">Edit</a>
+                            <form th:action="'/admin/users/' + ${u.id} + '/delete'" method="post">
+                                <button class="btn btn-secondary" type="submit">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

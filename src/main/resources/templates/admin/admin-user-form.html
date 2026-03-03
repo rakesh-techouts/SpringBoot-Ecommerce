@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin | Edit User</title>
+    <link rel="stylesheet" href="/style.css"/>
+    <style>
+        body {
+            background: #eef3f8;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #1e2a44, #253a66);
+            color: #fff;
+            border-radius: 14px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 22px rgba(20, 37, 73, 0.25);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-header h2 {
+            margin: 0;
+            color: #fff;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-card {
+            border-radius: 14px;
+            border: 1px solid #d9e1ef;
+            box-shadow: 0 6px 18px rgba(25, 45, 88, 0.08);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(260px, 1fr));
+            gap: 0.9rem 1rem;
+        }
+
+        .full-span {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 900px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <section class="section">
+        <div class="admin-header">
+            <h2>Edit User</h2>
+            <div class="admin-actions">
+                <a class="btn btn-secondary" href="/admin/users">Users</a>
+                <a class="btn btn-secondary" href="/admin/products">Products</a>
+                <a class="btn btn-secondary" href="/logout">Logout</a>
+            </div>
+        </div>
+
+        <div class="card spaced-top admin-card">
+            <form th:action="'/admin/users/' + ${user.id} + '/save'" method="post">
+                <div class="form-grid">
+                    <div>
+                        <label>Name</label>
+                        <input type="text" name="name" th:value="${user.name}" required/>
+                    </div>
+
+                    <div>
+                        <label>Username</label>
+                        <input type="text" name="username" th:value="${user.username}" required/>
+                    </div>
+
+                    <div>
+                        <label>Email</label>
+                        <input type="email" name="email" th:value="${user.email}" required/>
+                    </div>
+
+                    <div>
+                        <label>Phone</label>
+                        <input type="text" name="phone" th:value="${user.phone}"/>
+                    </div>
+
+                    <div>
+                        <label>Gender</label>
+                        <select name="gender">
+                            <option value="">Select gender</option>
+                            <option th:each="g : ${genders}" th:value="${g.name()}" th:text="${g.name()}" th:selected="${user.gender != null and user.gender.name() == g.name()}">MALE</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Date Of Birth</label>
+                        <input type="date" name="dateOfBirth" th:value="${user.dateOfBirth != null ? #temporals.format(user.dateOfBirth, 'yyyy-MM-dd') : ''}"/>
+                    </div>
+
+                    <div class="full-span">
+                        <label>Address</label>
+                        <textarea name="address" rows="3" th:text="${user.address}"></textarea>
+                    </div>
+
+                    <div class="full-span">
+                        <label>Profile Picture URL</label>
+                        <input type="url" name="profilePicture" th:value="${user.profilePicture}"/>
+                    </div>
+                </div>
+
+                <p class="muted">Password is not editable here. Use a separate password reset flow.</p>
+
+                <div style="display:flex; gap:0.6rem; margin-top:1rem;">
+                    <button class="btn btn-primary" type="submit">Save User</button>
+                    <a class="btn btn-secondary" href="/admin/users">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+</body>
+</html>

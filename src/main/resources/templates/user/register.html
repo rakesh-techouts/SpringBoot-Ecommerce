@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ShopSphere | Register</title>
+    <link rel="stylesheet" href="/style.css"/>
+    <script src="/theme.js"></script>
+</head>
+<body>
+<div class="auth-wrap">
+    <div class="card auth-card">
+        <h2>Create Account</h2>
+        <p class="muted">Join and start placing orders quickly.</p>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+        <form method="post" action="/register">
+            <label>Name</label>
+            <input type="text" name="name" required/>
+            <label>Username</label>
+            <input type="text" name="username" minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]+" title="Username can only contain letters, numbers, and underscores" required/>
+            <label>Email</label>
+            <input type="email" name="email" required/>
+            <label>Phone Number</label>
+            <input type="tel" name="phone" pattern="[0-9]{10}" maxlength="10" required/>
+            <label>Password</label>
+            <input type="password" name="password" id="password" minlength="8" required/>
+            <label>Confirm Password</label>
+            <input type="password" name="confirmPassword" id="confirmPassword" minlength="8" required oninput="checkPasswordMatch()"/>
+            <div id="passwordError" style="color: red; font-size: 0.9em; margin-top: 5px;"></div>
+            <button class="spaced-top" type="submit" id="submitBtn">Register</button>
+        </form>
+        <p class="spaced-top">Already have an account? <a class="subtle-link" href="/login">Login</a></p>
+        <p><a class="subtle-link" href="/index">Back to products</a></p>
+    </div>
+</div>
+
+<script>
+function checkPasswordMatch() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const passwordError = document.getElementById('passwordError');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    if (password !== confirmPassword) {
+        passwordError.textContent = 'Passwords do not match';
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.6';
+    } else {
+        passwordError.textContent = '';
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+    }
+}
+</script>
+</body>
+</html>

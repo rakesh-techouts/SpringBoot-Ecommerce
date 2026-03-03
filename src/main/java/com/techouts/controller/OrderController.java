@@ -1,6 +1,7 @@
 package com.techouts.controller;
 
 import com.techouts.entity.Order;
+import com.techouts.entity.OrderItems;
 import com.techouts.entity.CartItem;
 import com.techouts.entity.Products;
 import com.techouts.entity.User;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -43,22 +45,29 @@ public class OrderController {
     }
 
     @GetMapping("/checkout")
-    public String checkout(@RequestParam(required = false) Long productId, HttpSession session, Model model) {
+    public String checkout(@RequestParam(required = false) Long productId,
+                           @RequestParam(required = false) Integer quantity,
+                           HttpSession session,
+                           Model model) {
         Long userId = loggedInUserId(session);
         if (userId == null) {
             return "redirect:/login";
         }
         
         User user = userService.findById(userId);
+        int directQuantity = (quantity == null || quantity < 1) ? 1 : quantity;
         model.addAttribute("productId", productId);
+        model.addAttribute("quantity", directQuantity);
         model.addAttribute("paymentModes", PAYMENT_MODES);
         model.addAttribute("userAddress", user.getAddress());
-        populateCheckoutSummary(userId, productId, model);
-        return "checkout";
+        model.addAttribute("cartCount", cartItemsService.getCartItemCount(userId));
+        populateCheckoutSummary(userId, productId, directQuantity, model);
+        return "user/checkout";
     }
 
     @PostMapping("/checkout/place")
     public String placeOrder(@RequestParam(required = false) Long productId,
+                             @RequestParam(required = false) Integer quantity,
                              @RequestParam String shippingAddress,
                              @RequestParam String paymentMode,
                              HttpSession session,
@@ -68,19 +77,22 @@ public class OrderController {
             return "redirect:/login";
         }
         try {
-            orderService.placeOrder(userId, productId, shippingAddress, paymentMode);
-            return "redirect:/orders";
+            int directQuantity = (quantity == null || quantity < 1) ? 1 : quantity;
+            Order order = orderService.placeOrder(userId, productId, directQuantity, shippingAddress, paymentMode);
+            return "redirect:/order-success?orderId=" + order.getId();
         } catch (IllegalArgumentException ex) {
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("productId", productId);
+            model.addAttribute("quantity", quantity);
             model.addAttribute("shippingAddress", shippingAddress);
             model.addAttribute("selectedPaymentMode", paymentMode);
             model.addAttribute("paymentModes", PAYMENT_MODES);
+            model.addAttribute("cartCount", cartItemsService.getCartItemCount(userId));
             // Add user address for display
             User user = userService.findById(userId);
             model.addAttribute("userAddress", user.getAddress());
-            populateCheckoutSummary(userId, productId, model);
-            return "checkout";
+            populateCheckoutSummary(userId, productId, (quantity == null || quantity < 1) ? 1 : quantity, model);
+            return "user/checkout";
         }
     }
 
@@ -92,7 +104,53 @@ public class OrderController {
         }
         List<Order> orders = orderService.getOrderHistory(userId);
         model.addAttribute("orders", orders);
-        return "orders";
+        
+        // Add cart count
+        int cartCount = cartItemsService.getCartItemCount(userId);
+        model.addAttribute("cartCount", cartCount);
+        
+        return "user/orders";
+    }
+
+    @GetMapping("/order-success")
+    public String orderSuccess(@RequestParam Long orderId, HttpSession session, Model model) {
+        Long userId = loggedInUserId(session);
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        
+        try {
+            Order order = orderService.getOrderById(orderId);
+            User user = userService.findById(userId);
+            List<OrderItems> orderItems = orderService.getOrderItems(orderId);
+            
+            model.addAttribute("order", order);
+            model.addAttribute("user", user);
+            model.addAttribute("orderItems", orderItems);
+            model.addAttribute("shippingAddress", order.getShippingAddress());
+            model.addAttribute("paymentMode", order.getPaymentMode());
+            model.addAttribute("cartCount", cartItemsService.getCartItemCount(userId));
+            return "user/order-success";
+        } catch (IllegalArgumentException ex) {
+            model.addAttribute("error", "Order not found");
+            return "redirect:/orders";
+        }
+    }
+
+    @PostMapping("/orders/cancel")
+    public String cancelOrder(@RequestParam Long orderId, HttpSession session, RedirectAttributes redirectAttributes) {
+        Long userId = loggedInUserId(session);
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
+        try {
+            orderService.cancelOrder(userId, orderId);
+            redirectAttributes.addFlashAttribute("success", "Order cancelled successfully");
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        }
+        return "redirect:/orders";
     }
 
     private Long loggedInUserId(HttpSession session) {
@@ -100,14 +158,15 @@ public class OrderController {
         return userId instanceof Long ? (Long) userId : null;
     }
 
-    private void populateCheckoutSummary(Long userId, Long productId, Model model) {
+    private void populateCheckoutSummary(Long userId, Long productId, Integer directQuantity, Model model) {
         List<CheckoutItemView> items = new ArrayList<>();
         BigDecimal total = BigDecimal.ZERO;
 
         if (productId != null) {
             Products product = productService.getById(productId);
-            BigDecimal subtotal = product.getPrice();
-            items.add(new CheckoutItemView(product.getImageUrl(), product.getName(), product.getPrice(), 1, subtotal));
+            int quantity = (directQuantity == null || directQuantity < 1) ? 1 : directQuantity;
+            BigDecimal subtotal = product.getPrice().multiply(BigDecimal.valueOf(quantity));
+            items.add(new CheckoutItemView(product.getImageUrl(), product.getName(), product.getPrice(), quantity, subtotal));
             total = total.add(subtotal);
         } else {
             List<CartItem> cartItems = cartItemsService.getCartItems(userId);

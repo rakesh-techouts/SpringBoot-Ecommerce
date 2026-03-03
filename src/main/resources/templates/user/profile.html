@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ShopSphere | Profile</title>
+    <link rel="stylesheet" href="/style.css"/>
+    <script src="/theme.js"></script>
+</head>
+<body>
+<div class="nav">
+    <div class="container">
+        <a class="brand" href="/home">
+            <svg class="brand-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <span class="brand-text">ShopSphere</span>
+        </a>
+        <div class="nav-links">
+            <a href="/home" class="nav-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9,22 9,12 15,12 15,22"/>
+                </svg>
+                <span>Home</span>
+            </a>
+            <a href="/cart" class="nav-link cart-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"/>
+                    <circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                <span>Cart</span>
+                <span class="cart-count" id="cartCount"
+                      th:style="${cartCount != null and cartCount > 0} ? '' : 'display:none;'"
+                      th:text="${cartCount != null and cartCount > 0 ? cartCount : ''}"></span>
+            </a>
+            <a href="/orders" class="nav-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10,9 9,9 8,9"/>
+                </svg>
+                <span>Orders</span>
+            </a>
+            <a href="/profile" class="nav-link active">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span>Profile</span>
+            </a>
+            <a href="/admin" class="nav-link" th:if="${session.IS_ADMIN != null and session.IS_ADMIN}">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.08a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.08a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.08a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                <span>Admin Activities</span>
+            </a>
+            <a href="/logout" class="nav-link logout">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16,17 21,12 16,7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <section class="section">
+        <div class="card">
+            <div class="profile-header">
+                <h2>My Profile</h2>
+                <button type="button" id="editProfileBtn" class="edit-btn" onclick="toggleEditMode()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    Edit Profile
+                </button>
+            </div>
+            
+            <p class="error" th:if="${error}" th:text="${error}"></p>
+            <p class="success" th:if="${success}" th:text="${success}"></p>
+            
+            <!-- Profile Picture Section -->
+            <div class="profile-picture-section">
+                <div class="profile-picture-container">
+                    <img id="profileImage" 
+                         src="/default-profile.png" 
+                         alt="Profile Picture" 
+                         class="profile-picture"
+                         th:src="${user.profilePicture != null and !#strings.isEmpty(user.profilePicture) ? user.profilePicture : '/default-profile.png'}"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9Ijc1IiBjeT0iNzUiIHI9Ijc1IiBmaWxsPSIjZjBmMGYwIi8+CjxjaXJjbGUgY3g9Ijc1IiBjeT0iNTUiIHI9IjIwIiBmaWxsPSIjY2NjIi8+CjxwYXRoIGQ9Ik00NSAxMjBDNDUgMTA1IDU1IDk1IDc1IDk1Qzk1IDk1IDEwNSAxMDUgMTA1IDEyMFYxMzBINDVWMTIwWiIgZmlsbD0iI2NjYyIvPgo8L3N2Zz4K';"/>
+                    <div class="profile-picture-overlay" id="profileOverlay" style="display: none;">
+                        <button type="button" class="change-picture-btn" onclick="document.getElementById('profilePictureFile').click()">
+                            Change Photo
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profile Display Mode -->
+            <div id="profileDisplay" class="profile-display">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            Full Name
+                        </div>
+                        <div class="info-value" th:text="${user.name}">John Doe</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <line x1="22" y1="11" x2="22" y2="15"/>
+                                <line x1="19" y1="13" x2="25" y2="13"/>
+                            </svg>
+                            Username
+                        </div>
+                        <div class="info-value" th:text="${user.username}">johndoe</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                            Email
+                        </div>
+                        <div class="info-value" th:text="${user.email}">john@example.com</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                            Phone
+                        </div>
+                        <div class="info-value" th:text="${user.phone != null ? user.phone : 'Not provided'}">+1234567890</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            Address
+                        </div>
+                        <div class="info-value" th:text="${user.address != null ? user.address : 'Not provided'}">123 Main St, City</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                            Gender
+                        </div>
+                        <div class="info-value" th:text="${user.gender != null ? #strings.capitalize(user.gender.toString().replace('_', ' ')) : 'Not specified'}">Not specified</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                            Date of Birth
+                        </div>
+                        <div class="info-value" th:text="${user.dateOfBirth != null ? #temporals.format(user.dateOfBirth, 'dd/MM/yyyy') : 'Not provided'}">Not provided</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profile Edit Form -->
+            <form id="profileEdit" method="post" action="/profile/update" class="profile-form" enctype="multipart/form-data" style="display: none;">
+                <input type="file" id="profilePictureFile" name="profilePictureFile" accept="image/*" style="display: none;" onchange="previewProfilePicture(event)"/>
+                <input type="hidden" id="profilePicture" name="profilePicture" th:value="${user.profilePicture}"/>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            Full Name
+                        </label>
+                        <input type="text" id="name" name="name" th:value="${user.name}" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="username">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <line x1="22" y1="11" x2="22" y2="15"/>
+                                <line x1="19" y1="13" x2="25" y2="13"/>
+                            </svg>
+                            Username
+                        </label>
+                        <input type="text" id="username" name="username" th:value="${user.username}" required 
+                               pattern="[a-zA-Z0-9_]{3,20}" title="Username must be 3-20 characters, letters, numbers, and underscores only"/>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                            Email
+                        </label>
+                        <input type="email" id="email" name="email" th:value="${user.email}" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                            Phone Number
+                        </label>
+                        <input type="tel" id="phone" name="phone" th:value="${user.phone}" 
+                               pattern="[0-9]{10}" maxlength="10" title="Enter a valid 10-digit phone number"/>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="gender">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                            Gender
+                        </label>
+                        <select id="gender" name="gender">
+                            <option value="">Select Gender</option>
+                            <option value="MALE" th:selected="${user.gender != null and user.gender.toString() == 'MALE'}">Male</option>
+                            <option value="FEMALE" th:selected="${user.gender != null and user.gender.toString() == 'FEMALE'}">Female</option>
+                            <option value="OTHER" th:selected="${user.gender != null and user.gender.toString() == 'OTHER'}">Other</option>
+                            <option value="PREFER_NOT_TO_SAY" th:selected="${user.gender != null and user.gender.toString() == 'PREFER_NOT_TO_SAY'}">Prefer not to say</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dateOfBirth">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                            Date of Birth
+                        </label>
+                        <input type="date" id="dateOfBirth" name="dateOfBirth" 
+                               th:value="${user.dateOfBirth != null ? #temporals.format(user.dateOfBirth, 'yyyy-MM-dd') : ''}"
+                               max=""/>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        Address (Optional)
+                    </label>
+                    <textarea id="address" name="address" rows="4" 
+                              placeholder="Enter your complete address with landmark, city, state, and PIN code"
+                              th:text="${user.address}"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" onclick="toggleEditMode()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+
+<style>
+/* Modern Navigation Styles */
+.nav {
+    background: #283a45;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: white;
+    font-weight: 700;
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.brand:hover {
+    transform: translateY(-2px);
+}
+
+.brand-icon {
+    width: 28px;
+    height: 28px;
+    stroke: white;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.brand-text {
+    background: linear-gradient(45deg, #ffffff, #f0f0f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.nav-links {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.nav-link:hover::before {
+    opacity: 1;
+}
+
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nav-link.logout {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+}
+
+.nav-link.logout:hover {
+    background: rgba(239, 68, 68, 0.3);
+    color: white;
+}
+
+/* Cart count badge styles */
+.cart-link {
+    position: relative;
+}
+
+.nav-link.cart-link {
+    overflow: visible;
+}
+
+.cart-count {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #ff4757;
+    color: white;
+    border-radius: 50%;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    font-size: 9px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #283a45;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.nav-link svg {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover svg {
+    transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .nav .container {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem 0;
+    }
+    
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .nav-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .nav-link span:not(.cart-count) {
+        display: none;
+    }
+    
+    .brand {
+        font-size: 1.25rem;
+    }
+}
+
+/* Profile Page Styles */
+.profile-picture-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.profile-picture-container {
+    position: relative;
+    display: inline-block;
+    width: 150px;
+    height: 150px;
+    margin-bottom: 1rem;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #007bff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f0f0f0;
+    display: block;
+}
+
+.profile-picture-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.profile-picture-container:hover .profile-picture-overlay {
+    opacity: 1;
+}
+
+.change-picture-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.change-picture-btn:hover {
+    background-color: #0056b3;
+}
+
+.profile-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    flex: 1;
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+    border-color: #545b62;
+}
+
+.success {
+    color: #28a745;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+/* Profile Page Styles */
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.edit-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.profile-display {
+    margin-bottom: 2rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-item {
+    background: #f8f9fa;
+    padding: 1.25rem;
+    border-radius: 12px;
+    border-left: 4px solid #007bff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.info-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.info-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.info-label svg {
+    flex-shrink: 0;
+}
+
+.info-value {
+    color: #212529;
+    font-size: 1rem;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.form-group label svg {
+    flex-shrink: 0;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .profile-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+</style>
+
+<script>
+// Set max date for date of birth (today's date)
+document.addEventListener('DOMContentLoaded', function() {
+    const dateOfBirthInput = document.getElementById('dateOfBirth');
+    if (dateOfBirthInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateOfBirthInput.setAttribute('max', today);
+    }
+});
+
+function toggleEditMode() {
+    const displayMode = document.getElementById('profileDisplay');
+    const editMode = document.getElementById('profileEdit');
+    const editBtn = document.getElementById('editProfileBtn');
+    const profileOverlay = document.getElementById('profileOverlay');
+    
+    if (displayMode.style.display === 'none') {
+        // Switch to display mode
+        displayMode.style.display = 'block';
+        editMode.style.display = 'none';
+        editBtn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            Edit Profile
+        `;
+        profileOverlay.style.display = 'none';
+    } else {
+        // Switch to edit mode
+        displayMode.style.display = 'none';
+        editMode.style.display = 'block';
+        editBtn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            Cancel Edit
+        `;
+        profileOverlay.style.display = 'flex';
+    }
+}
+
+function previewProfilePicture(event) {
+    const file = event.target.files[0];
+    if (file) {
+        // Check file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Profile picture size should be less than 5MB');
+            event.target.value = '';
+            return;
+        }
+        
+        // Check file type
+        if (!file.type.startsWith('image/')) {
+            alert('Please select a valid image file');
+            event.target.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const profileImage = document.getElementById('profileImage');
+            const profilePictureHidden = document.getElementById('profilePicture');
+            
+            // Update preview
+            profileImage.src = e.target.result;
+            
+            // Store the fact that a new file is selected (hidden field will be ignored on server side)
+            profilePictureHidden.value = 'new-file-selected';
+            
+            console.log('Profile picture preview updated');
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Ensure form submission works properly
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.profile-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const fileInput = document.getElementById('profilePictureFile');
+            console.log('Form submitting with file:', fileInput.files[0]?.name || 'No file');
+        });
+    }
+});
+</script>
+
+<script>
+// Update cart count dynamically
+function updateCartCount() {
+    fetch('/cart/count')
+        .then(response => response.json())
+        .then(data => {
+            const cartCountElement = document.getElementById('cartCount');
+            if (cartCountElement) {
+                cartCountElement.textContent = data.cartCount;
+                cartCountElement.style.display = data.cartCount > 0 ? 'flex' : 'none';
+            }
+        })
+        .catch(error => console.error('Error fetching cart count:', error));
+}
+
+// Update cart count on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateCartCount();
+    
+    // Update cart count periodically (every 30 seconds)
+    setInterval(updateCartCount, 30000);
+});
+</script>
+</body>
+</html>

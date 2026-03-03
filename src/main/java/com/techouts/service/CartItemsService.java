@@ -17,5 +17,7 @@ public interface CartItemsService {
 
     List<CartItem> getCartItems(Long userId);
 
+    int getCartItemCount(Long userId);
+
     void clearCart(Long userId);
 }

@@ -8,4 +8,6 @@ public interface ProductService {
     List<Products> getProducts(String category);
 
     Products getById(Long productId);
+    
+    List<Products> searchProductsByName(String name);
 }

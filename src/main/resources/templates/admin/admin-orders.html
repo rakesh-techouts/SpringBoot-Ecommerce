@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin | Orders</title>
+    <link rel="stylesheet" href="/style.css"/>
+</head>
+<body>
+<div class="container">
+    <section class="section">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+            <h2>Admin Panel - Orders</h2>
+            <div style="display:flex; gap:0.5rem;">
+                <a class="btn btn-secondary" href="/admin/products">Products</a>
+                <a class="btn btn-secondary" href="/admin/users">Users</a>
+                <a class="btn btn-secondary" href="/home">User Site</a>
+                <a class="btn btn-secondary" href="/logout">Logout</a>
+            </div>
+        </div>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+        <p class="success" th:if="${success}" th:text="${success}"></p>
+
+        <div class="card spaced-top">
+            <h3>Order Management</h3>
+            <form method="get" action="/admin/orders" style="display:grid; grid-template-columns:2fr 1fr 1fr auto; gap:0.6rem; margin:0.8rem 0 1rem;">
+                <input type="text" name="userQuery" placeholder="Search by userId, username, email, phone" th:value="${userQuery}"/>
+                <select name="status">
+                    <option value="ALL" th:selected="${selectedStatus == 'ALL'}">All Status</option>
+                    <option th:each="s : ${statuses}" th:value="${s.name()}" th:text="${s.name()}" th:selected="${selectedStatus == s.name()}">PLACED</option>
+                </select>
+                <select name="sort">
+                    <option value="createdAtDesc" th:selected="${selectedSort == 'createdAtDesc'}">Newest First</option>
+                    <option value="createdAtAsc" th:selected="${selectedSort == 'createdAtAsc'}">Oldest First</option>
+                    <option value="statusAsc" th:selected="${selectedSort == 'statusAsc'}">Status A-Z</option>
+                    <option value="statusDesc" th:selected="${selectedSort == 'statusDesc'}">Status Z-A</option>
+                </select>
+                <button class="btn btn-primary" type="submit">Apply</button>
+            </form>
+
+            <table>
+                <tr>
+                    <th>Order #</th>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+                <tr th:each="o : ${orders}" th:with="statusName=${o.status != null ? o.status.name() : 'PLACED'}">
+                    <td th:text="${o.id}">1</td>
+                    <td th:text="${o.user.id}">1</td>
+                    <td th:text="${o.user.username}">user</td>
+                    <td th:text="${o.user.email}">user@mail.com</td>
+                    <td th:text="${o.user.phone != null ? o.user.phone : '-'}">9999999999</td>
+                    <td th:text="${#temporals.format(o.createdAt, 'dd/MM/yyyy HH:mm')}">date</td>
+                    <td><span th:text="${statusName}">PLACED</span></td>
+                    <td>Rs. <span th:text="${o.totalAmount}">0</span></td>
+                    <td>
+                        <form th:action="'/admin/orders/' + ${o.id} + '/status'" method="post" style="display:flex; gap:0.4rem;">
+                            <select name="status">
+                                <option th:each="s : ${statuses}" th:value="${s.name()}" th:text="${s.name()}" th:selected="${s.name() == statusName}">PLACED</option>
+                            </select>
+                            <button class="btn btn-primary" type="submit">Save</button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </section>
+</div>
+</body>
+</html>

@@ -97,6 +97,12 @@ public class CartItemsServiceImpl implements CartItemsService {
     }
 
     @Override
+    public int getCartItemCount(Long userId) {
+        Cart cart = getCartForUser(userId);
+        return cartItemRepository.sumQuantityByCartId(cart.getId());
+    }
+
+    @Override
     @Transactional
     public void clearCart(Long userId) {
         Cart cart = getCartForUser(userId);
