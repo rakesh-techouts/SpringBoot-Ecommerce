@@ -2,8 +2,7 @@
 
 [![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://adoptium.net/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.8-6DB33F.svg)](https://spring.io/projects/spring-boot)
-[![License](https://img.shields.io/badge/License-Add%20LICENSE%20file-lightgrey.svg)](./LICENSE)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/<your-github-username>/<your-repo-name>/ci.yml?branch=main&label=build)](https://github.com/<your-github-username>/<your-repo-name>/actions)
+
 
 > Update `<your-github-username>` and `<your-repo-name>` in the build badge URL after pushing to GitHub.
 
